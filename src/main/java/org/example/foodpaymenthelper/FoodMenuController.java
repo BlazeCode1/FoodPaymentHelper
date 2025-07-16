@@ -54,7 +54,7 @@ public class FoodMenuController {
     @GetMapping("/cart")
     public ResponseEntity<ArrayList<CartItem>> getCart(){
         if(cart.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(cart);
     }
@@ -72,5 +72,16 @@ public class FoodMenuController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found or out of stock");
     }
 
+    @PostMapping("/cart/remove/{id}")
+    public ResponseEntity<String> removeFromCart(@PathVariable String id) {
+        for (int i = 0; i < cart.size(); i++) {
+            if (cart.get(i).getProductId().equals(id)) {
+                CartItem removedItem = cart.get(i);
+                cart.remove(i);
+                return ResponseEntity.ok("Removed " + removedItem.getProductName() + " from cart.");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not in cart.");
+    }
 
 }
